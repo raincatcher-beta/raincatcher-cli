@@ -51,3 +51,11 @@ The commands `wfm status` and `wfm pull` will run their respective _git_ command
 The command `wfm clean` will remove the *node_modules* folder in each of the app folders **only**.
 
 The command `wfm install` will run *npm install* in each of the app and module folders.
+
+## Running the apps
+Before running the applications (via `grunt` in the respective folders), you must start mongo.  The wfm-cli provides the `wfm mongo {start|stop|status}` command to do this:
+```
+wfm mongo start
+wfm mongo status
+wfm mongo stop
+```

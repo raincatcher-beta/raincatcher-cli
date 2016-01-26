@@ -10,6 +10,11 @@ BASE_REPO="git@github.com:feedhenry-staff"
 WFM_CLI_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WFM_DIR="$WFM_CLI_DIR/.."
 
+MONGO_DIR="$WFM_DIR/mongo"
+MONGO_DATA="$MONGO_DIR/data"
+MONGO_LOG="$MONGO_DIR/mongodb.log"
+MONGO_PID="$MONGO_DIR/mongodb.pid"
+
 APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
 MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder"
 
@@ -121,6 +126,43 @@ statusModules () {
   done
 }
 
+mongo () {
+  if [ ! -d $MONGO_DIR ]; then
+    mkdir $MONGO_DIR
+  fi
+  if [ ! -d "$MONGO_DATA" ]; then
+    mkdir $MONGO_DATA
+  fi
+  PID=`ps x | grep -v grep | grep "mongod" | grep $MONGO_DATA |awk '{ print $1 }'`
+  case $1 in
+    start)
+    if [ ! -z $PID ]; then
+      echo "Mongo is already running. pid: $PID"
+    else
+      mongod --dbpath $MONGO_DATA --logpath ${MONGO_LOG} --fork --logappend
+    fi
+    ;;
+    stop)
+    if [ -z $PID ]; then
+      echo "Mongo is already stopped."
+    else
+      echo "Mongo stopping. pid: $PID"
+      kill $PID
+    fi
+    ;;
+    status)
+    if [ ! -z $PID ]; then
+      echo "Mongo is running. pid: $PID"
+    else
+      echo "Mongo is not running."
+    fi
+    ;;
+    *)
+    echo "Usage: wfm mongo {start|stop|status}"
+  esac
+  #
+}
+
 case $1 in
   pull)
   pullApps
@@ -148,6 +190,9 @@ case $1 in
   echo "Script PATH is:"
   echo $WFM_CLI_DIR
   ;;
+  mongo)
+  mongo $2
+  ;;
   *)
-  echo "Usage: wfm {clone|status|pull|clean|install|link|path}"
+  echo "Usage: wfm {clone|status|pull|clean|install|link|path|mongo}"
 esac
