@@ -2,6 +2,7 @@
 
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
+GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
 BASE_REPO="git@github.com:feedhenry-staff"
@@ -70,6 +71,16 @@ cloneApps () {
   done
 }
 
+statusApps() {
+  for D in $APPS; do
+    cd "$APPS_DIR/$D"
+    echo -e "${YELLOW}#########${NC}"
+    echo -e "${GREEN}Status: $D"
+    echo -e "${NC}"
+    git status
+  done
+}
+
 case $1 in
   pull)
   pullApps
@@ -83,6 +94,9 @@ case $1 in
   ;;
   clone)
   cloneApps
+  ;;
+  status)
+  statusApps
   ;;
   *)
   echo "Usage: wfm {pull|link|clean|clone}"
