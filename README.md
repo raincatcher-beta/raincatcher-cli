@@ -8,7 +8,10 @@ If this is your first time working with WFM, do the following:
 ```
 git clone git@github.com:feedhenry-staff/wfm-cli.git
 ```
-2. Add the `wfm` script to your PATH
+2. Add the `wfm` script to your PATH.  eg. in your `.bashrc file add:`
+```
+export PATH="$PATH:$HOME/[path-to-wfm-cli-repo]"
+```
 3. Clone all the wfm repos:
 ```
 wfm clone
