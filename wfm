@@ -3,15 +3,17 @@
 WFM_CLI_DIR=$(dirname $(readlink -f $0))
 WFM_DIR="$WFM_CLI_DIR/.."
 
+APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
+
+APPS_DIR="$WFM_DIR"
 MODULES_DIR="$WFM_DIR/modules"
 
 # symlink all wfm modules:
 #
 
 pullApps () {
-  APPS="wfm2-cloud wfm2-auth wfm2-mobile wfm2-portal"
   for D in $APPS; do
-    cd "$WFM_DIR/$D"
+    cd "$APPS_DIR/$D"
     echo #########
     echo `pwd`
     git pull
@@ -28,11 +30,29 @@ pullModules () {
   done
 }
 
-linkModules () {
+linkApps () {
+  for D in $APPS; do
+    cd "$APPS_DIR/$D"
+    echo #########
+    echo 'linking: ' `pwd`
+    linkToModules
+  done
+}
+
+linkToModules () {
   MODULES=$(grep fh-wfm package.json | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
   echo "Linking modules: $MODULES"
   for M in $MODULES; do
     npm link ../modules/$M
+  done
+}
+
+cleanApps () {
+  for D in $APPS; do
+    cd "$APPS_DIR/$D"
+    echo #########
+    echo 'cleaning: ' `pwd`
+    rm -rf node_modules
   done
 }
 
@@ -42,7 +62,10 @@ case $1 in
   pullModules
   ;;
   link)
-  linkModules
+  linkApps
+  ;;
+  clean)
+  cleanApps
   ;;
   *)
   echo "Usage: wfm {pull|link}"
