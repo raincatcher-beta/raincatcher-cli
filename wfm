@@ -163,6 +163,11 @@ mongo () {
   #
 }
 
+start () {
+  cd $WFM_CLI_DIR
+  WFM_PATH=$WFM_DIR tmuxinator wfm
+}
+
 case $1 in
   pull)
   pullApps
@@ -192,6 +197,9 @@ case $1 in
   ;;
   mongo)
   mongo $2
+  ;;
+  start)
+  start
   ;;
   *)
   echo "Usage: wfm {clone|status|pull|clean|install|link|path|mongo}"

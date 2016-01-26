@@ -53,7 +53,27 @@ The command `wfm clean` will remove the *node_modules* folder in each of the app
 The command `wfm install` will run *npm install* in each of the app and module folders.
 
 ## Running the apps
-Before running the applications (via `grunt` in the respective folders), you must start mongo.  The wfm-cli provides the `wfm mongo {start|stop|status}` command to do this:
+1. Install *tmux*
+  * On linux:
+```
+apt-get install tmux
+```
+  * On Mac, this may work:
+> https://gist.github.com/simme/1297707
+
+2. Install tmuxinator (ruby required)
+```
+gem install tmuxinator
+```
+3. Start the WFM node processes (mongo will be started automatically):
+```
+wfm start
+```
+
+Each of the terminals started by tmux can be interacted with individually to stop/restart each node process.
+
+### (Optional) manual mongo Controls
+The `wfm start` task will start mongo automatically.  However the wfm-cli provides the `wfm mongo {start|stop|status}` command take manual control of the mongo process:
 ```
 wfm mongo start
 wfm mongo status
