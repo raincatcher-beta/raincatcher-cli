@@ -11,12 +11,10 @@ WFM_CLI_DIR=$(dirname $(readlink -f $0))
 WFM_DIR="$WFM_CLI_DIR/.."
 
 APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
+MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder"
 
 APPS_DIR="$WFM_DIR"
 MODULES_DIR="$WFM_DIR/modules"
-
-# symlink all wfm modules:
-#
 
 pullApps () {
   for D in $APPS; do
@@ -62,9 +60,40 @@ cleanApps () {
   done
 }
 
-cloneApps () {
+installApps () {
   for D in $APPS; do
-    cd "$APPS_DIR/"
+    cd "$APPS_DIR/$D"
+    echo -e "${YELLOW}#########${NC}"
+    echo -e "${RED}Installing:${NC} $D"
+    npm install
+  done
+}
+
+installModules () {
+  for D in $MODULES; do
+    cd "$MODULES_DIR/$D"
+    echo -e "${YELLOW}#########${NC}"
+    echo -e "${RED}Installing:${NC} $D"
+    npm install
+  done
+}
+
+
+cloneApps () {
+  cd "$APPS_DIR"
+  for D in $APPS; do
+    echo -e "${YELLOW}#########${NC}"
+    echo -e "${RED}Cloning:${NC} $D"
+    git clone "$BASE_REPO/${D}.git"
+  done
+}
+
+cloneModules () {
+  if [ ! -d $MODULES_DIR ]; then
+    mkdir $MODULES_DIR
+  fi
+  cd "$MODULES_DIR"
+  for D in $MODULES; do
     echo -e "${YELLOW}#########${NC}"
     echo -e "${RED}Cloning:${NC} $D"
     git clone "$BASE_REPO/${D}.git"
@@ -103,13 +132,18 @@ case $1 in
   clean)
   cleanApps
   ;;
+  install)
+  installApps
+  installModules
+  ;;
   clone)
   cloneApps
+  cloneModules
   ;;
   status)
   statusApps
   statusModules
   ;;
   *)
-  echo "Usage: wfm {pull|link|clean|clone}"
+  echo "Usage: wfm {clone|status|pull|clean|isntall|link}"
 esac
