@@ -4,7 +4,7 @@ A CLI tool for working with the WFM 2 demo and developing the WFM modules.
 ## Getting started
 If this is your first time working with WFM, do the following:
 
-1. Clone this CLI tool
+1. Clone this CLI tool:
 ```
 git clone git@github.com:feedhenry-staff/wfm-cli.git
 ```
@@ -12,15 +12,15 @@ git clone git@github.com:feedhenry-staff/wfm-cli.git
 ```
 export PATH="$PATH:$HOME/[path-to-wfm-cli-repo]"
 ```
-3. Clone all the wfm repos:
+3. This will clone all the wfm repos:
 ```
 wfm clone
 ```
-4. npm install in each repo:
+4. This will run `npm install` in each repo :
 ```
 wfm install
 ```
-5. npm link the wfm modules into the parent apps
+5. This will run `npm link` for all the wfm modules in each of the apps:
 ```
 wfm link
 ```
