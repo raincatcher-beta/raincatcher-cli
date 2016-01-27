@@ -226,5 +226,5 @@ case $1 in
   start
   ;;
   *)
-  echo "Usage: wfm {clone|status|pull|clean|install|link|path|mongo}"
+  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo}"
 esac
