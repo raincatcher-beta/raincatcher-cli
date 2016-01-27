@@ -126,6 +126,11 @@ statusModules () {
   done
 }
 
+status () {
+  statusApps
+  statusModules
+}
+
 mongo () {
   if [ ! -d $MONGO_DIR ]; then
     mkdir $MONGO_DIR
@@ -188,8 +193,7 @@ case $1 in
   cloneModules
   ;;
   status)
-  statusApps
-  statusModules
+  status | less -r
   ;;
   path)
   echo "Script PATH is:"
