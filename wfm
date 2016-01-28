@@ -195,6 +195,16 @@ start () {
   WFM_PATH=$WFM_DIR tmuxinator wfm
 }
 
+ackWfm () {
+  cd $WFM_DIR
+  DIRS=$APPS
+  for D in modules/*; do
+    DIRS="$DIRS $D"
+  done
+  shift
+  ack-grep "$@" $DIRS
+}
+
 case $1 in
   pull)
   pullApps
@@ -230,6 +240,12 @@ case $1 in
   start)
   start
   ;;
+  grep)
+  ackWfm $@
+  ;;
+  ack)
+  ackWfm $@
+  ;;
   *)
-  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo}"
+  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
 esac
