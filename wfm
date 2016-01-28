@@ -117,11 +117,12 @@ status() {
 }
 
 diff () {
+  shift
   for D in $REPO_DIRS; do
     cd "$WFM_DIR/$D"
-    DIFF="$(git diff --color)"
+    DIFF="$(git diff --color $@)"
     if [ -n "$DIFF" ]; then
-      echoHeader "Diff: $D"
+      echoHeader "Diff: $D\n$ git diff --color $@"
       echo "$DIFF"
     fi
   done
@@ -218,7 +219,7 @@ case $1 in
   status | less -r
   ;;
   diff)
-  diff | less -r
+  diff "$@" | less -r
   ;;
   path)
   echo "Script PATH is:"
