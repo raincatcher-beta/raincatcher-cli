@@ -18,7 +18,12 @@ MONGO_PID="$MONGO_DIR/mongodb.pid"
 APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
 MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder"
 
-APPS_DIR="$WFM_DIR"
+REPO_DIRS=$APPS
+cd $WFM_DIR
+for D in modules/*; do
+  REPO_DIRS="$REPO_DIRS $D"
+done
+
 MODULES_DIR="$WFM_DIR/modules"
 
 echoHeader () {
@@ -28,18 +33,9 @@ echoHeader () {
   echo -e "${YELLOW}################################################################################${NC}"
 }
 
-pullApps () {
-  for D in $APPS; do
-    cd "$APPS_DIR/$D"
-    echoHeader "Pulling: $D"
-    git pull
-  done
-}
-
-pullModules () {
-  ls "$MODULES_DIR/"
-  for D in $MODULES_DIR/*; do
-    cd $D
+pull () {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
     echoHeader "Pulling: $D"
     git pull
   done
@@ -47,7 +43,7 @@ pullModules () {
 
 linkApps () {
   for D in $APPS; do
-    cd "$APPS_DIR/$D"
+    cd "$WFM_DIR/$D"
     echoHeader "Linking: $D"
     linkToModules
   done
@@ -62,31 +58,22 @@ linkToModules () {
 
 cleanApps () {
   for D in $APPS; do
-    cd "$APPS_DIR/$D"
+    cd "$WFM_DIR/$D"
     echoHeader "Cleaning: $D"
     rm -rf node_modules
   done
 }
 
-installApps () {
-  for D in $APPS; do
-    cd "$APPS_DIR/$D"
+install () {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
     echoHeader "Installing: $D"
     npm install
   done
 }
-
-installModules () {
-  for D in $MODULES; do
-    cd "$MODULES_DIR/$D"
-    echoHeader "Installing: $D"
-    npm install
-  done
-}
-
 
 cloneApps () {
-  cd "$APPS_DIR"
+  cd "$WFM_DIR"
   for D in $APPS; do
     echoHeader "Cloning: $D"
     git clone "$BASE_REPO/${D}.git"
@@ -104,9 +91,9 @@ cloneModules () {
   done
 }
 
-statusApps() {
-  for D in $APPS; do
-    cd "$APPS_DIR/$D"
+status() {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
     STATUS="$(git status -s)"
     if [ -n "$STATUS" ]; then
       STATUS="$(git status -s -b)"
@@ -114,37 +101,11 @@ statusApps() {
       echo "$STATUS"
     fi
   done
-}
-
-statusModules () {
-  for D in $MODULES_DIR/*; do
-    cd $D
-    STATUS="$(git status -s)"
-    if [ -n "$STATUS" ]; then
-      STATUS="$(git status -s -b)"
-      echoHeader "Status: $D"
-      echo "$STATUS"
-    fi
-  done
-}
-
-status () {
-  statusApps
-  statusModules
 }
 
 diff () {
-  for D in $APPS; do
-    cd "$APPS_DIR/$D"
-    DIFF="$(git diff --color)"
-    if [ -n "$DIFF" ]; then
-      echoHeader "Diff: $D"
-      echo "$DIFF"
-    fi
-  done
-
-  for D in $MODULES_DIR/*; do
-    cd $D
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
     DIFF="$(git diff --color)"
     if [ -n "$DIFF" ]; then
       echoHeader "Diff: $D"
@@ -197,18 +158,13 @@ start () {
 
 ackWfm () {
   cd $WFM_DIR
-  DIRS=$APPS
-  for D in modules/*; do
-    DIRS="$DIRS $D"
-  done
   shift
-  ack-grep "$@" $DIRS
+  ack-grep "$@" REPO_DIRS
 }
 
 case $1 in
   pull)
-  pullApps
-  pullModules
+  pull
   ;;
   link)
   linkApps
@@ -217,8 +173,7 @@ case $1 in
   cleanApps
   ;;
   install)
-  installApps
-  installModules
+  install
   ;;
   clone)
   cloneApps
@@ -233,6 +188,7 @@ case $1 in
   path)
   echo "Script PATH is:"
   echo $WFM_CLI_DIR
+  echo $REPO_DIRS
   ;;
   mongo)
   mongo $2
