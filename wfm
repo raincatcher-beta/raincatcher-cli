@@ -31,8 +31,7 @@ echoHeader () {
 pullApps () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo #########
-    echo `pwd`
+    echoHeader "Pulling: $D"
     git pull
   done
 }
@@ -41,8 +40,7 @@ pullModules () {
   ls "$MODULES_DIR/"
   for D in $MODULES_DIR/*; do
     cd $D
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Pulling:${NC} $D"
+    echoHeader "Pulling: $D"
     git pull
   done
 }
@@ -50,8 +48,7 @@ pullModules () {
 linkApps () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Linking:${NC} $D"
+    echoHeader "Linking: $D"
     linkToModules
   done
 }
@@ -66,8 +63,7 @@ linkToModules () {
 cleanApps () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Cleaning:${NC} $D"
+    echoHeader "Cleaning: $D"
     rm -rf node_modules
   done
 }
@@ -75,8 +71,7 @@ cleanApps () {
 installApps () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Installing:${NC} $D"
+    echoHeader "Installing: $D"
     npm install
   done
 }
@@ -84,8 +79,7 @@ installApps () {
 installModules () {
   for D in $MODULES; do
     cd "$MODULES_DIR/$D"
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Installing:${NC} $D"
+    echoHeader "Installing: $D"
     npm install
   done
 }
@@ -94,8 +88,7 @@ installModules () {
 cloneApps () {
   cd "$APPS_DIR"
   for D in $APPS; do
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Cloning:${NC} $D"
+    echoHeader "Cloning: $D"
     git clone "$BASE_REPO/${D}.git"
   done
 }
@@ -106,8 +99,7 @@ cloneModules () {
   fi
   cd "$MODULES_DIR"
   for D in $MODULES; do
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${RED}Cloning:${NC} $D"
+    echoHeader "Cloning: $D"
     git clone "$BASE_REPO/${D}.git"
   done
 }
@@ -115,9 +107,7 @@ cloneModules () {
 statusApps() {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${GREEN}Status: $D${NC}"
+    echoHeader "Status: $D"
     git status
   done
 }
@@ -125,9 +115,7 @@ statusApps() {
 statusModules () {
   for D in $MODULES_DIR/*; do
     cd $D
-    echo
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${GREEN}Status: $D${NC}"
+    echoHeader "Status: $D"
     git status
   done
 }
