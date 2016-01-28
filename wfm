@@ -29,7 +29,7 @@ MODULES_DIR="$WFM_DIR/modules"
 echoHeader () {
   echo
   echo -e "${YELLOW}################################################################################${NC}"
-  echo -e "${GREEN}${1}${NC}"
+  echo -e "${GREEN}${@}${NC}"
   echo -e "${YELLOW}################################################################################${NC}"
 }
 
@@ -44,6 +44,16 @@ confirm () {
         false
         ;;
     esac
+}
+
+requoteArgs () {
+  local res=""
+  for x in "${@}" ; do
+      # try to figure out if quoting was required for the $x:
+      grep -q "[[:space:]]" <<< "$x" && res="${res} '${x}'" || res="${res} ${x}"
+  done
+  # remove first space and print:
+  sed -e 's/^ //' <<< "${res}"
 }
 
 pull () {
@@ -108,7 +118,8 @@ status() {
   for D in $REPO_DIRS; do
     cd "$WFM_DIR/$D"
     STATUS="$(git status -s)"
-    if [ -n "$STATUS" ]; then
+    AHEAD_BEHIND="$(git status -s -b | grep -E 'ahead|behind')"
+    if [ -n "$STATUS" ] || [ -n "$AHEAD_BEHIND" ]; then
       STATUS="$(git -c color.status=always status -s -b)"
       echoHeader "Status: $D"
       echo "$STATUS"
@@ -177,13 +188,14 @@ ackWfm () {
 }
 
 commit () {
+  ARGS=$(requoteArgs "${@}")
   for D in $REPO_DIRS; do
     cd "$WFM_DIR/$D"
     STATUS="$(git status -s)"
     if [ -n "$STATUS" ]; then
-      echoHeader "Commit: $D\n$ git commit $@"
+      echoHeader "Commit: $D\n$ git $ARGS"
       git status
-      confirm && echo git $@
+      confirm && bash -c "git ${ARGS}"
     fi
   done
 }
