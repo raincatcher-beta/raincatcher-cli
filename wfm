@@ -33,6 +33,19 @@ echoHeader () {
   echo -e "${YELLOW}################################################################################${NC}"
 }
 
+confirm () {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case $response in
+      [yY][eE][sS]|[yY])
+        true
+        ;;
+      *)
+        false
+        ;;
+    esac
+}
+
 pull () {
   for D in $REPO_DIRS; do
     cd "$WFM_DIR/$D"
@@ -162,11 +175,23 @@ ackWfm () {
   ack-grep "$@" REPO_DIRS
 }
 
+commit () {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
+    STATUS="$(git status -s)"
+    if [ -n "$STATUS" ]; then
+      echoHeader "Commit: $D\n$ git commit $@"
+      git status
+      confirm && echo git $@
+    fi
+  done
+}
+
 gitWfm () {
   cd $WFM_DIR
   shift
   for D in $REPO_DIRS; do
-    echoHeader "Diff: $D\n$ git $@"
+    echoHeader "Git: $D\n$ git $@"
     cd "$WFM_DIR/$D"
     git "$@"
   done
@@ -211,6 +236,9 @@ case $1 in
   ;;
   ack)
   ackWfm "$@"
+  ;;
+  commit)
+  commit "$@"
   ;;
   git)
   gitWfm "$@"
