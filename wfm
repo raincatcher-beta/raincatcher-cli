@@ -21,6 +21,13 @@ MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wf
 APPS_DIR="$WFM_DIR"
 MODULES_DIR="$WFM_DIR/modules"
 
+echoHeader () {
+  echo
+  echo -e "${YELLOW}################################################################################${NC}"
+  echo -e "${GREEN}${1}${NC}"
+  echo -e "${YELLOW}################################################################################${NC}"
+}
+
 pullApps () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
@@ -133,18 +140,20 @@ status () {
 diff () {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echo
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${GREEN}Diff: $D${NC}"
-    git diff --color
+    DIFF="$(git diff --color)"
+    if [ -n "$DIFF" ]; then
+      echoHeader "Diff: $D"
+      echo "$DIFF"
+    fi
   done
 
   for D in $MODULES_DIR/*; do
     cd $D
-    echo
-    echo -e "${YELLOW}#########${NC}"
-    echo -e "${GREEN}Diff: $D${NC}"
-    git diff --color
+    DIFF="$(git diff --color)"
+    if [ -n "$DIFF" ]; then
+      echoHeader "Diff: $D"
+      echo "$DIFF"
+    fi
   done
 }
 
