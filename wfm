@@ -107,16 +107,24 @@ cloneModules () {
 statusApps() {
   for D in $APPS; do
     cd "$APPS_DIR/$D"
-    echoHeader "Status: $D"
-    git status
+    STATUS="$(git status -s)"
+    if [ -n "$STATUS" ]; then
+      STATUS="$(git status -s -b)"
+      echoHeader "Status: $D"
+      echo "$STATUS"
+    fi
   done
 }
 
 statusModules () {
   for D in $MODULES_DIR/*; do
     cd $D
-    echoHeader "Status: $D"
-    git status
+    STATUS="$(git status -s)"
+    if [ -n "$STATUS" ]; then
+      STATUS="$(git status -s -b)"
+      echoHeader "Status: $D"
+      echo "$STATUS"
+    fi
   done
 }
 
