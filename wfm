@@ -162,6 +162,16 @@ ackWfm () {
   ack-grep "$@" REPO_DIRS
 }
 
+gitWfm () {
+  cd $WFM_DIR
+  shift
+  for D in $REPO_DIRS; do
+    echoHeader "Diff: $D\n$ git $@"
+    cd "$WFM_DIR/$D"
+    git "$@"
+  done
+}
+
 case $1 in
   pull)
   pull
@@ -197,10 +207,13 @@ case $1 in
   start
   ;;
   grep)
-  ackWfm $@
+  ackWfm "$@"
   ;;
   ack)
-  ackWfm $@
+  ackWfm "$@"
+  ;;
+  git)
+  gitWfm "$@"
   ;;
   *)
   echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
