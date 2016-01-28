@@ -109,7 +109,7 @@ status() {
     cd "$WFM_DIR/$D"
     STATUS="$(git status -s)"
     if [ -n "$STATUS" ]; then
-      STATUS="$(git status -s -b)"
+      STATUS="$(git -c color.status=always status -s -b)"
       echoHeader "Status: $D"
       echo "$STATUS"
     fi
