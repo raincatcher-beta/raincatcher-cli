@@ -210,6 +210,11 @@ gitWfm () {
   done
 }
 
+atomWfm() {
+  cd $WFM_DIR
+  atom wfm-* modules/*
+}
+
 case $1 in
   pull)
   pull
@@ -255,6 +260,9 @@ case $1 in
   ;;
   git)
   gitWfm "$@"
+  ;;
+  atom)
+  atomWfm
   ;;
   *)
   echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
