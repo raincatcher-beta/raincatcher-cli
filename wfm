@@ -184,7 +184,7 @@ start () {
 ackWfm () {
   cd $WFM_DIR
   shift
-  ack-grep "$@" REPO_DIRS
+  ack-grep "$@" $REPO_DIRS
 }
 
 commit () {
