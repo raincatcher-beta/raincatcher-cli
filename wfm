@@ -16,7 +16,7 @@ MONGO_LOG="$MONGO_DIR/mongodb.log"
 MONGO_PID="$MONGO_DIR/mongodb.pid"
 
 APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
-MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder wfm-result"
+MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder wfm-result wfm-message"
 
 REPO_DIRS=$APPS
 cd $WFM_DIR
@@ -210,6 +210,17 @@ gitWfm () {
   done
 }
 
+execWfm () {
+  shift
+  ARGS=$(requoteArgs "${@}")
+  cd $WFM_DIR
+  for D in $REPO_DIRS; do
+    echoHeader "Exec: $D\n$ ${ARGS}"
+    cd "$WFM_DIR/$D"
+    eval "$ARGS"
+  done
+}
+
 atomWfm() {
   cd $WFM_DIR
   atom wfm-* modules/*
@@ -263,6 +274,9 @@ case $1 in
   ;;
   atom)
   atomWfm
+  ;;
+  exec)
+  execWfm "$@"
   ;;
   *)
   echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
