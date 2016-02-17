@@ -226,6 +226,43 @@ atomWfm() {
   atom wfm-* modules/*
 }
 
+allHeadersWfm() {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Headers: $D"
+    headerWfm
+  done
+}
+
+headerWfm() {
+  JS_FILES=$(ack . -l --js --ignore-file=is:feedhenry.js \
+                --ignore-file=is:bundle.js \
+                )
+  for FILE in $JS_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.js" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+  CSS_FILES=$(ack . -l --sass )
+  for FILE in $CSS_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.css" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+  HTML_FILES=$(ack . -l --html )
+  for FILE in $HTML_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.html" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+}
+
+license() {
+  for D in $REPO_DIRS; do
+    cp "${WFM_CLI_DIR}/LICENSE.txt" "${D}"
+  done
+}
+
 case $1 in
   pull)
   pull
@@ -277,6 +314,12 @@ case $1 in
   ;;
   exec)
   execWfm "$@"
+  ;;
+  header)
+  allHeadersWfm "$@"
+  ;;
+  license)
+  license
   ;;
   *)
   echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
