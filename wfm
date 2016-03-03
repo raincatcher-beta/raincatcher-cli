@@ -321,6 +321,13 @@ case $1 in
   license)
   license
   ;;
+  pwd)
+  cd $WFM_DIR
+  pwd
+  ;;
+  shortlist)
+  echo pull link clean install clone status diff path mongo start grep ack commit git atom exec header license pwd
+  ;;
   *)
   echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
 esac
