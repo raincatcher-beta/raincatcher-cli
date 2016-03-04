@@ -25,8 +25,6 @@ for D in $MODULES; do
   REPO_DIRS=${REPO_DIRS}" modules/"${D}
 done
 
-MODULES_DIR="modules"
-
 echoHeader () {
   echo
   echo -e "${YELLOW}################################################################################${NC}"
@@ -130,15 +128,24 @@ install () {
 
 clone () {
   cd "$WFM_DIR"
-  if [ ! -d $MODULES_DIR ]; then
-    mkdir $MODULES_DIR
+  if [ ! -d "modules" ]; then
+    mkdir "modules"
   fi
   shift
-  local TARGETS=$(chooseTargets)
+  local TARGETS=$(chooseTargets "$@")
   for D in $TARGETS; do
+    cd "${WFM_DIR}"
     if [ ! -d "$D" ]; then
       echoHeader "Cloning: $D"
-      git clone "$BASE_REPO/${D}.git"
+      REPO=""
+      if [[ $D == "modules/"* ]]; then
+        cd "${WFM_DIR}/modules"
+        REPO=${D#modules/}
+      else
+        cd "${WFM_DIR}"
+        REPO=$D
+      fi
+      git clone "$BASE_REPO/${REPO}.git"
     else
       echo -e "${GREEN}${D} already exists${NC}"
     fi
@@ -310,7 +317,7 @@ case $1 in
   install "$@"
   ;;
   clone)
-  clone
+  clone "$@"
   ;;
   status)
   status "$@" | less -r
