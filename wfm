@@ -149,6 +149,7 @@ status() {
   shift
   local TARGETS=$(chooseTargets "$@")
   for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
     STATUS="$(git status -s)"
     AHEAD_BEHIND="$(git status -s -b | grep -E 'ahead|behind')"
     if [ -n "$STATUS" ] || [ -n "$AHEAD_BEHIND" ]; then
