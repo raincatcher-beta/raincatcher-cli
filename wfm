@@ -18,13 +18,14 @@ MONGO_PID="$MONGO_DIR/mongodb.pid"
 APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
 MODULES="wfm-appform wfm-component-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder wfm-result wfm-message wfm-map"
 
+ORIG_DIR=$(pwd)
+
 REPO_DIRS=$APPS
-cd $WFM_DIR
-for D in modules/*; do
-  REPO_DIRS="$REPO_DIRS $D"
+for D in $MODULES; do
+  REPO_DIRS=${REPO_DIRS}" modules/"${D}
 done
 
-MODULES_DIR="$WFM_DIR/modules"
+MODULES_DIR="modules"
 
 echoHeader () {
   echo
@@ -56,31 +57,61 @@ requoteArgs () {
   sed -e 's/^ //' <<< "${res}"
 }
 
+chooseTargets () {
+  TARGETS=""
+  if [ -z "$1" ]; then
+    TARGETS=$REPO_DIRS;
+   elif [ "$1" = "." ]; then
+     TARGETS=$ORIG_DIR
+   elif [ "$1" = "apps" ]; then
+     TARGETS=$APPS;
+   elif [ "$1" = "modules" ]; then
+     for D in $MODULES; do
+       TARGETS=${TARGETS}" modules/"${D}
+     done
+   elif [[ $MODULES =~ $1 ]]; then
+     TARGETS="modules/"${1}
+   elif [[ $APPS =~ $1 ]]; then
+     TARGETS=$1
+   fi
+   echo $TARGETS
+}
+
 pull () {
-  for D in $REPO_DIRS; do
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
     cd "$WFM_DIR/$D"
     echoHeader "Pulling: $D"
     git pull
   done
 }
 
-linkApps () {
-  for D in $APPS; do
+link () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
     cd "$WFM_DIR/$D"
     echoHeader "Linking: $D"
-    linkToModules
+    if [[ $D =~ "modules" ]]; then
+      linkToModules ".."
+    else
+      linkToModules "../modules"
+    fi
   done
 }
 
 linkToModules () {
-  MODULES=$(grep fh-wfm package.json | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
+  MODULES=$(cat package.json | sed -n -e '/dependencies/I,$p' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
   for M in $MODULES; do
-    npm link ../modules/$M
+    npm link ${1}/$M
   done
 }
 
-cleanApps () {
-  for D in $APPS; do
+clean () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
     cd "$WFM_DIR/$D"
     echoHeader "Cleaning: $D"
     rm -rf node_modules
@@ -88,35 +119,36 @@ cleanApps () {
 }
 
 install () {
-  for D in $REPO_DIRS; do
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
     cd "$WFM_DIR/$D"
     echoHeader "Installing: $D"
     npm install
   done
 }
 
-cloneApps () {
+clone () {
   cd "$WFM_DIR"
-  for D in $APPS; do
-    echoHeader "Cloning: $D"
-    git clone "$BASE_REPO/${D}.git"
-  done
-}
-
-cloneModules () {
   if [ ! -d $MODULES_DIR ]; then
     mkdir $MODULES_DIR
   fi
-  cd "$MODULES_DIR"
-  for D in $MODULES; do
-    echoHeader "Cloning: $D"
-    git clone "$BASE_REPO/${D}.git"
+  shift
+  local TARGETS=$(chooseTargets)
+  for D in $TARGETS; do
+    if [ ! -d "$D" ]; then
+      echoHeader "Cloning: $D"
+      git clone "$BASE_REPO/${D}.git"
+    else
+      echo -e "${GREEN}${D} already exists${NC}"
+    fi
   done
 }
 
 status() {
-  for D in $REPO_DIRS; do
-    cd "$WFM_DIR/$D"
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
     STATUS="$(git status -s)"
     AHEAD_BEHIND="$(git status -s -b | grep -E 'ahead|behind')"
     if [ -n "$STATUS" ] || [ -n "$AHEAD_BEHIND" ]; then
@@ -265,23 +297,22 @@ license() {
 
 case $1 in
   pull)
-  pull
+  pull "$@"
   ;;
   link)
-  linkApps
+  link "$@"
   ;;
   clean)
-  cleanApps
+  clean "$@"
   ;;
   install)
-  install
+  install "$@"
   ;;
   clone)
-  cloneApps
-  cloneModules
+  clone
   ;;
   status)
-  status | less -r
+  status "$@" | less -r
   ;;
   diff)
   diff "$@" | less -r
