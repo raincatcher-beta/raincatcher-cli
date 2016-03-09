@@ -100,7 +100,7 @@ link () {
 }
 
 linkToModules () {
-  MODULES=$(cat package.json | sed -n -e '/dependencies/I,$p' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
+  MODULES=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
   for M in $MODULES; do
     npm link ${1}/$M
   done
