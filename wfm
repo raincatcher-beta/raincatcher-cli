@@ -60,7 +60,7 @@ chooseTargets () {
   if [ -z "$1" ]; then
     TARGETS=$REPO_DIRS;
    elif [ "$1" = "." ]; then
-     TARGETS=$ORIG_DIR
+     TARGETS=$(realpath --relative-to="${WFM_DIR}" "${ORIG_DIR}")
    elif [ "$1" = "apps" ]; then
      TARGETS=$APPS;
    elif [ "$1" = "modules" ]; then
@@ -88,21 +88,26 @@ pull () {
 link () {
   shift
   local TARGETS=$(chooseTargets "$@")
+  linkFromModules
   for D in $TARGETS; do
     cd "$WFM_DIR/$D"
     echoHeader "Linking: $D"
-    if [[ $D =~ "modules" ]]; then
-      linkToModules ".."
-    else
-      linkToModules "../modules"
-    fi
+    linkToModules
   done
 }
 
 linkToModules () {
-  MODULES=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' | sed 's/fh-//')
-  for M in $MODULES; do
-    npm link ${1}/$M
+  MODULES_TO_LINK=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' )
+  for M in $MODULES_TO_LINK; do
+    npm link $M
+  done
+}
+
+linkFromModules () {
+  local TARGETS=$(chooseTargets modules)
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    npm link
   done
 }
 
