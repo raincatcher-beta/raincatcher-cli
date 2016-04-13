@@ -303,6 +303,34 @@ license() {
   done
 }
 
+version() {
+  shift
+  TARGETS="";
+  for D in $MODULES; do
+    if [ "wfm-template-build" != "${D}" ]; then
+      TARGETS=${TARGETS}" modules/"${D}
+    fi
+  done
+  echo $TARGETS
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    npm version  "${@}"
+  done
+}
+
+publish() {
+  TARGETS="";
+  for D in $MODULES; do
+    if [ "wfm-template-build" != "${D}" ]; then
+      TARGETS=${TARGETS}" modules/"${D}
+    fi
+  done
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    npm publish
+  done
+}
+
 case $1 in
   pull)
   pull "$@"
@@ -359,6 +387,12 @@ case $1 in
   ;;
   license)
   license
+  ;;
+  version)
+  version "$@"
+  ;;
+  publish)
+  publish
   ;;
   pwd)
   cd $WFM_DIR
