@@ -96,6 +96,17 @@ link () {
   done
 }
 
+unlink () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Linking: $D"
+    unlinkModules
+  done
+}
+
+
 linkToModules () {
   MODULES_TO_LINK=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' )
   for M in $MODULES_TO_LINK; do
@@ -103,6 +114,12 @@ linkToModules () {
   done
 }
 
+unlinkModules () {
+  MODULES_TO_LINK=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' )
+  for M in $MODULES_TO_LINK; do
+    npm unlink $M
+  done
+}
 linkFromModules () {
   local TARGETS=$(chooseTargets modules)
   for D in $TARGETS; do
@@ -342,6 +359,9 @@ case $1 in
   ;;
   link)
   link "$@"
+  ;;
+  unlink)
+  unlink "$@"
   ;;
   clean)
   clean "$@"
