@@ -191,14 +191,21 @@ status() {
 
 diff () {
   shift
-  for D in $REPO_DIRS; do
-    cd "$WFM_DIR/$D"
-    DIFF="$(git diff --color $@)"
-    if [ -n "$DIFF" ]; then
-      echoHeader "Diff: $D\n$ git diff --color $@"
-      echo "$DIFF"
-    fi
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    diffRepo $D
   done
+}
+
+diffRepo() {
+  D=$1
+  shift
+  cd "$WFM_DIR/$D"
+  DIFF="$(git diff --color $@)"
+  if [ -n "$DIFF" ]; then
+    echoHeader "Diff: $D\n$ git diff --color $@"
+    echo "$DIFF"
+  fi
 }
 
 mongo () {
@@ -252,14 +259,19 @@ ackWfm () {
 commit () {
   ARGS=$(requoteArgs "${@}")
   for D in $REPO_DIRS; do
-    cd "$WFM_DIR/$D"
-    STATUS="$(git status -s)"
-    if [ -n "$STATUS" ]; then
-      echoHeader "Commit: $D\n$ git $ARGS"
-      git status
-      confirm && bash -c "git ${ARGS}"
-    fi
+    commitRepo $D
   done
+}
+
+commitRepo() {
+  D=$1
+  cd "$WFM_DIR/$D"
+  STATUS="$(git status -s)"
+  if [ -n "$STATUS" ]; then
+    echoHeader "Commit: $D\n$ git $ARGS"
+    git status
+    confirm && bash -c "git ${ARGS}"
+  fi
 }
 
 gitWfm () {
@@ -325,32 +337,95 @@ license() {
   done
 }
 
-version() {
-  shift
-  TARGETS="";
+release() {
+  GROUP_1="wfm-template-build wfm-mediator";
+  GROUP_2="wfm-signature wfm-sync"
+  GROUP_3="";
   for D in $MODULES; do
-    if [ "wfm-template-build" != "${D}" ]; then
-      TARGETS=${TARGETS}" modules/"${D}
+    if [[ ! ${GROUP_1} =~ $D && ! ${GROUP_2} =~ $D ]]; then
+      GROUP_3="${GROUP_3}$D "
     fi
   done
-  echo $TARGETS
-  for D in $TARGETS; do
-    cd "$WFM_DIR/$D"
-    npm version  "${@}"
+  WFM_GROUPS="$GROUP_1 $GROUP_2 $GROUP_3"
+  for D in $WFM_GROUPS; do
+    updateModule "modules/${D}"
+    versionModule "modules/${D}"
   done
 }
 
-publish() {
-  TARGETS="";
-  for D in $MODULES; do
-    if [ "wfm-template-build" != "${D}" ]; then
-      TARGETS=${TARGETS}" modules/"${D}
-    fi
-  done
+version() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
   for D in $TARGETS; do
     cd "$WFM_DIR/$D"
-    npm publish
+    versionModule "${D}"
   done
+}
+
+versionModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  LATEST_VERSION=$(git describe --abbrev=0 --tags)
+  COMMIT_COUNT=$(git log --oneline ${LATEST_VERSION}..master -q | wc -l)
+  echoHeader "wfm version ${2}: ${D}\nCommit count: ${COMMIT_COUNT}"
+  if [ $COMMIT_COUNT -gt 0 ]; then
+    npm version patch
+    confirm "Publish ${D}? [y/N] " && publishModule "${D}"
+  else
+    echo "${LATEST_VERSION} release of ${D} is current"
+  fi
+}
+
+update() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    updateModule "${D}"
+  done
+}
+
+
+updateModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  TTY=$(/usr/bin/tty)
+  local RESULT=$(ncu --jsonUpgraded -f /^fh-wfm/ < $TTY)
+  if [ $RESULT != "{}" ]; then
+    echoHeader "wfm update: ${D}"
+    ncu -f /^fh-wfm/ < $TTY
+    confirm "Apply updates? [y/N] " && ncu -f /^fh-wfm/ -u < $TTY && \
+    diffRepo $D | more && \
+    cd "$WFM_DIR/$D" && \
+    confirm "Commit result? [y/N] " && git add package.json && git commit -m 'Updated fh-wfm* dependencies'
+  fi
+}
+
+publish() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
+  for D in $TARGETS; do
+    publishModule $D
+  done
+}
+
+publishModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  echoHeader "npm publish: ${D}"
+  npm publish
 }
 
 case $1 in
@@ -416,8 +491,14 @@ case $1 in
   version)
   version "$@"
   ;;
+  update)
+  update "$@"
+  ;;
   publish)
-  publish
+  publish "$@"
+  ;;
+  release)
+  release "$@"
   ;;
   pwd)
   cd $WFM_DIR
