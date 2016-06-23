@@ -35,10 +35,14 @@ git push --tags origin master
 ### Release the client apps
 For the _wfm-mobile_ and _wfm-portal_ applications we will switch to a _release_ branch and check in the results of the build artifacts
 ```
+ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm install && npm shrinkwrap
+git diff
+git commit -a -m'Updated fh-wfm dependencies'
+git push
 git checkout release
 git reset --hard master
 grunt build
-emacs .gitignore #(comment out www)
+sed -i 's/^www/#www/' .gitignore
 git status
 git add .gitignore www/
 git commit -m'Added the www folder'
