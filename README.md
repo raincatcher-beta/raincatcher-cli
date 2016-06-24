@@ -1,12 +1,12 @@
 #WFM CLI
-A CLI tool for working with the WFM 2 demo and developing the WFM modules.
+A CLI tool for working with the Raincatcher demos and developing the Raincatcher modules.
 
 ## Getting started
-If this is your first time working with WFM, do the following:
+If this is your first time working with Raincatcher, do the following:
 
 1. Clone this CLI tool:
 ```
-git clone git@github.com:feedhenry-staff/wfm-cli.git
+git clone git@github.com:feedhenry-raincatcher/wfm-cli.git
 ```
 2. Add the `wfm` script to your PATH.  eg. in your `.bashrc` file add:
 ```
@@ -28,21 +28,27 @@ wfm link
 ### Resulting folder structure:
 ```
 ├── modules
-│   ├── wfm-appform
-│   ├── wfm-component-signature
-│   ├── wfm-mediator
-│   ├── wfm-risk-assessment
-│   ├── wfm-sync
-│   ├── wfm-template-build
-│   ├── wfm-user
-│   ├── wfm-vehicle-inspection
-│   ├── wfm-workflow
-│   └── wfm-workorder
-├── wfm-auth
-├── wfm-cli
-├── wfm-cloud
-├── wfm-mobile
-└── wfm-portal
+│   ├── raincatcher-analytics
+│   ├── raincatcher-appform
+│   ├── raincatcher-camera
+│   ├── raincatcher-file
+│   ├── raincatcher-mediator
+│   ├── raincatcher-message
+│   ├── raincatcher-result
+│   ├── raincatcher-risk-assessment
+│   ├── raincatcher-schedule
+│   ├── raincatcher-signature
+│   ├── raincatcher-sync
+│   ├── raincatcher-template-build
+│   ├── raincatcher-user
+│   ├── raincatcher-vehicle-inspection
+│   ├── raincatcher-workflow
+│   └── raincatcher-workorder
+├── raincatcher-demo-auth
+├── raincatcher-cli
+├── raincatcher-demo-cloud
+├── raincatcher-demo-mobile
+└── raincatcher-demo-portal
 ```
 
 ## Working with the repos

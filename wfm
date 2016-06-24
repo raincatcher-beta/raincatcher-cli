@@ -5,7 +5,7 @@ YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
-BASE_REPO="git@github.com:feedhenry-staff"
+BASE_REPO="git@github.com:feedhenry-raincatcher"
 
 WFM_CLI_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WFM_DIR="$WFM_CLI_DIR/.."
@@ -15,8 +15,8 @@ MONGO_DATA="$MONGO_DIR/data"
 MONGO_LOG="$MONGO_DIR/mongodb.log"
 MONGO_PID="$MONGO_DIR/mongodb.pid"
 
-APPS="wfm-cloud wfm-auth wfm-mobile wfm-portal"
-MODULES="wfm-appform wfm-signature wfm-mediator wfm-risk-assessment wfm-sync wfm-template-build wfm-user wfm-vehicle-inspection wfm-workflow wfm-workorder wfm-result wfm-message wfm-map wfm-schedule wfm-file wfm-camera wfm-analytics"
+APPS="raincatcher-demo-cloud raincatcher-demo-auth raincatcher-demo-mobile raincatcher-demo-portal"
+MODULES="raincatcher-appform raincatcher-signature raincatcher-mediator raincatcher-risk-assessment raincatcher-sync raincatcher-template-build raincatcher-user raincatcher-vehicle-inspection raincatcher-workflow raincatcher-workorder raincatcher-result raincatcher-message wfm-map raincatcher-schedule raincatcher-file raincatcher-camera raincatcher-analytics"
 
 ORIG_DIR=$(pwd)
 
@@ -338,8 +338,8 @@ license() {
 }
 
 release() {
-  GROUP_1="wfm-template-build wfm-mediator";
-  GROUP_2="wfm-signature wfm-sync"
+  GROUP_1="raincatcher-template-build raincatcher-mediator";
+  GROUP_2="raincatcher-signature raincatcher-sync"
   GROUP_3="";
   for D in $MODULES; do
     if [[ ! ${GROUP_1} =~ $D && ! ${GROUP_2} =~ $D ]]; then
