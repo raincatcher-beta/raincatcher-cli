@@ -16,7 +16,7 @@ MONGO_LOG="$MONGO_DIR/mongodb.log"
 MONGO_PID="$MONGO_DIR/mongodb.pid"
 
 APPS="raincatcher-demo-cloud raincatcher-demo-auth raincatcher-demo-mobile raincatcher-demo-portal"
-MODULES="raincatcher-appform raincatcher-signature raincatcher-mediator raincatcher-risk-assessment raincatcher-sync raincatcher-template-build raincatcher-user raincatcher-vehicle-inspection raincatcher-workflow raincatcher-workorder raincatcher-result raincatcher-message wfm-map raincatcher-schedule raincatcher-file raincatcher-camera raincatcher-analytics"
+MODULES="raincatcher-appform raincatcher-signature raincatcher-mediator raincatcher-risk-assessment raincatcher-sync raincatcher-template-build raincatcher-user raincatcher-vehicle-inspection raincatcher-workflow raincatcher-workorder raincatcher-result raincatcher-message raincatcher-map raincatcher-schedule raincatcher-file raincatcher-camera raincatcher-analytics"
 
 ORIG_DIR=$(pwd)
 
@@ -297,7 +297,7 @@ execWfm () {
 
 atomWfm() {
   cd $WFM_DIR
-  atom wfm-* modules/*
+  atom raincatcher-* modules/*
 }
 
 allHeadersWfm() {
