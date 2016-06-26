@@ -33,14 +33,14 @@ windows:
       layout: tiled
       panes:
         - cloud:
-          - cd "${WFM_PATH}/wfm-cloud"
+          - cd "${WFM_PATH}/raincatcher-demo-cloud"
           - grunt
         - auth:
-          - cd "${WFM_PATH}/wfm-auth"
+          - cd "${WFM_PATH}/raincatcher-demo-auth"
           - grunt
         - portal:
-          - cd "${WFM_PATH}/wfm-portal"
+          - cd "${WFM_PATH}/raincatcher-demo-portal"
           - grunt serve:local --url=http://localhost:8001
         - mobile:
-          - cd "${WFM_PATH}/wfm-mobile"
+          - cd "${WFM_PATH}/raincatcher-demo-mobile"
           - grunt serve:local --url=http://localhost:8001
