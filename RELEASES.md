@@ -2,6 +2,12 @@
 
 ## Update the WFM repositories
 
+Make sure you are on `master` on all the repositories
+```
+wfm git checkout master
+```
+then : 
+
 ```
 wfm git pull
 wfm clean
@@ -14,6 +20,12 @@ Iterate over each of the modules, performing a npm release and publish if requir
 
 ```
 wfm release
+```
+
+Push the modules commits to the remotes : 
+
+```
+wfm git push --tags origin master
 ```
 
 ## Release the demo apps
@@ -33,7 +45,16 @@ git push --tags origin master
 ```
 
 ### Release the client apps
-For the _wfm-mobile_ and _wfm-portal_ applications we will switch to a _release_ branch and check in the results of the build artifacts
+For the _wfm-mobile_ and _wfm-portal_ applications we will switch to a _release_ branch and check in the results of the build artifacts.
+
+On a fresh clone, you will have to create the release branch first : 
+```
+git checkout -b release
+```
+
+then : 
+
+
 ```
 ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm install && npm shrinkwrap
 git diff
