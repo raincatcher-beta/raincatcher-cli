@@ -20,7 +20,7 @@ The following steps will assume that the *RAINCATCHER_DIRECTORY* is the folder t
 
 If this is your first time working with Raincatcher, perform the following steps to set up your local development environment:
 
-1. Clone this CLI tool using the following command:
+1. Clone this CLI tool using the following commands:
 ```
 # Exporting the working directory for all Raincatcher modules.
 export RAINCATCHER_DIRECTORY="~/raincatcher/"
@@ -31,7 +31,7 @@ git clone git@github.com:feedhenry-raincatcher/raincatcher-cli.git
 ```
 2. Add the `wfm` script to your PATH. For example, in your `.bashrc` file, add:
 ```
-export PATH="$PATH:$RAINCATCHER_DIRECTORY/raincatcher-cli"
+export PATH="$PATH:$RAINCATCHER_DIRECTORY/raincatcher-cli/wfm"
 ```
 3. With the `wfm` command now available, clone all of the Raincatcher modules to your local machine using the following command:
 ```
