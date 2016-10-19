@@ -13,8 +13,9 @@ This CLI tool allows developers to:
 
 ## Getting Started
 
-To get set up for developing Raincatcher locally it is recommended that you set up a separate folder to contain all of the Raincatcher modules and demo apps. (e.g. `~/raincatcher`).
+*Note:* To be able to clone repositories from Github using ssh, you must have a ssh key associated with your github account. See [this guide](https://help.github.com/articles/generating-an-ssh-key/) for more information.
 
+To get set up for developing Raincatcher locally it is recommended that you set up a separate folder to contain all of the Raincatcher modules and demo apps. (e.g. `~/raincatcher`).
 
 The following steps will assume that the *RAINCATCHER_DIRECTORY* is the folder that you use for your local development.
 
