@@ -8,7 +8,11 @@ NC='\033[0m' # No Color
 BASE_REPO="git@github.com:feedhenry-raincatcher"
 
 WFM_CLI_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo $WFM_CLI_DIR
 WFM_DIR="$WFM_CLI_DIR/.."
+
+echo $WFM_DIR
+pwd
 
 MONGO_DIR="$WFM_DIR/mongo"
 MONGO_DATA="$MONGO_DIR/data"

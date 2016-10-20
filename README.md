@@ -13,8 +13,9 @@ This CLI tool allows developers to:
 
 ## Getting Started
 
-To get set up for developing Raincatcher locally it is recommended that you set up a separate folder to contain all of the Raincatcher modules and demo apps. (e.g. `~/raincatcher`).
+*Note:* To be able to clone repositories from Github using ssh, you must have a ssh key associated with your github account. See [this guide](https://help.github.com/articles/generating-an-ssh-key/) for more information.
 
+To get set up for developing Raincatcher locally it is recommended that you set up a separate folder to contain all of the Raincatcher modules and demo apps. (e.g. `~/raincatcher`).
 
 The following steps will assume that the *RAINCATCHER_DIRECTORY* is the folder that you use for your local development.
 
@@ -28,28 +29,22 @@ mkdir -p $RAINCATCHER_DIRECTORY
 cd $RAINCATCHER_DIRECTORY
 
 git clone git@github.com:feedhenry-raincatcher/raincatcher-cli.git
-```
-2. Add the `wfm` script to your PATH. For example, in your `.bashrc` file, add:
-```
-export PATH="$PATH:$RAINCATCHER_DIRECTORY/raincatcher-cli/wfm"
-```
-3. With the `wfm` command now available, clone all of the Raincatcher modules to your local machine using the following command:
-```
+
+# 2. Add the `wfm` script to your PATH. For example, in your `.bashrc` file, add:
+export PATH="$PATH:$RAINCATCHER_DIRECTORY/raincatcher-cli"
+
+# 3. With the `wfm` command now available, clone all of the Raincatcher modules to your local machine using the following command:
 wfm clone
-```
-The modules will be cloned to 
-4. Use the following command to install all of the dependencies for each Raincatcher module:
-```
+
+# 4. Use the following command to install all of the dependencies for each Raincatcher module:
 wfm install
-```
-This will run `npm install` in each repository.
-5. Run the following command to link all of the Raincatcher modules to modules that depend on them:
-```
+
+
+# 5. Run the following command to link all of the Raincatcher modules to modules that depend on them:
+# This command will run the `npm link` command for any Raincatcher module dependencies.
+# This useful when you intend to modify multiple modules and see the results in the demo app immediately.
 wfm link
 ```
-This command will run the `npm link` command for any Raincatcher module dependencies.
-
-This useful when you intend to modify multiple modules and see the results in the demo app immediately.
 
 ### Folder Structure For Local Development
 
