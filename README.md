@@ -24,7 +24,7 @@ If this is your first time working with Raincatcher, perform the following steps
 1. Clone this CLI tool using the following commands:
 ```
 # Exporting the working directory for all Raincatcher modules.
-export RAINCATCHER_DIRECTORY="~/raincatcher/"
+export RAINCATCHER_DIRECTORY=~/raincatcher/
 mkdir -p $RAINCATCHER_DIRECTORY
 cd $RAINCATCHER_DIRECTORY
 
