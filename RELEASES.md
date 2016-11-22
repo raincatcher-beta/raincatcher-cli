@@ -35,7 +35,7 @@ For each of the demo apps, we will update the wfm module dependencies and replac
 For _wfm-cloud_ and _wfm-auth_ we do the release right on master:
 
 ```
-ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm install && npm shrinkwrap
+ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm cache clean && npm install --production && npm shrinkwrap
 git diff
 git commit -a -m'Updated fh-wfm dependencies'
 git push
@@ -56,12 +56,13 @@ then :
 
 
 ```
-ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm install && npm shrinkwrap
+ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm cache clean && npm install --production && npm shrinkwrap
 git diff
 git commit -a -m'Updated fh-wfm dependencies'
 git push
 git checkout release
 git reset --hard master
+npm install
 grunt build
 sed -i 's/^www/#www/' .gitignore
 git status
