@@ -1,4 +1,4 @@
-#WFM Command Line Interface (CLI)
+# WFM Command Line Interface (CLI)
 
 This module provides a CLI tool for working with the Raincatcher demos and developing the Raincatcher modules. The Raincatcher demo solution has a dependency on many separate modules. 
 
@@ -83,7 +83,45 @@ Having cloned all of the required Raincatcher repositories to your local develop
 
 There are several aspects to local development that are helped by the raincatcher-cli tool.
 
-In order to be able to run the full demo solution, you need to have [MongoDB](https://docs.mongodb.com/manual/installation/) installed.
+In order to be able to run the full demo solution, you need to have MongoDB installed, you can either [install MongoDB locally](https://docs.mongodb.com/manual/installation/)
+or run a containerised version of it.
+
+### Using MongoDB from a container
+
+***Note*** If you do not have Docker installed you must first [install it.](https://docs.docker.com/engine/installation/).
+
+To run a containerised version of MongoDB run:
+
+```bash
+docker run --name raincatcher-mongo -p 27017:27017 -d mongo:2
+```
+
+There should now be a running instance of MongoDB running inside a container with port `27017` accessible by the appt. 
+
+To confirm that the MongoDB container is running as expected, run:
+
+```bash
+docker ps
+```
+
+and ensure that the `raincatcher-mongo` container is running.
+
+#### MongoDB container isn't running
+
+There may already be a container named `raincatcher-mongo`,
+if this container is running then there is no need to create a new MongoDB container. If the container is stopped and you wish
+to have a new container, delete the old `raincatcher-mongo` by running:
+
+```bash
+docker rm raincatcher-mongo
+```
+
+and run the `docker run` command again.
+
+If this is not the issue then port `27017` on your local machine may have already be claimed by another running instance of MongoDB.
+If this is the case, shut down that MongoDB and run the `docker run` command again.
+
+## Running Raincatcher
 
 - Running the Demo solution locally.
 - Editing a Raincatcher module locally and see it reflected in the Demo solution immediately.
@@ -101,7 +139,7 @@ apt-get install tmux
 ```
 gem install tmuxinator
 ```
-3. Start the WFM node processes (mongo will be started automatically):
+3. Start the WFM node processes (mongo will be started automatically if you installed it locally, else the Docker container should already be running):
 ```
 wfm start
 ```
