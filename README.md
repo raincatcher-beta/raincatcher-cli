@@ -86,10 +86,38 @@ Having run all of the commands above the following folder structure will have be
 
 Having cloned all of the required Raincatcher repositories to your local development environment, you are now ready to start local development.
 
-There are several aspects to local development that are helped by the raincatcher-cli tool.
+1. Install MongoDB [locally](https://docs.mongodb.com/manual/installation/) or [containerised](#using-mongodb-from-a-container)
 
-In order to be able to run the full demo solution, you need to have MongoDB installed, you can either [install MongoDB locally](https://docs.mongodb.com/manual/installation/)
-or run a containerised version of it.
+2. Install Redis
+  * On Linux: https://redis.io/topics/quickstart
+  * On Mac
+    ```
+    brew install redis
+    ```
+
+3. Install *tmux*
+  * On Linux:
+    ```
+    apt-get install tmux
+    ```
+  * On Mac: https://gist.github.com/simme/1297707.
+
+4. Install tmuxinator (Ruby required)
+  ```
+  gem install tmuxinator
+  ```
+
+5. Install grunt (Node.js required)
+  ```
+  npm install -g grunt
+  ```
+
+6. Start the Raincatcher node processes (mongo will be started automatically if you installed it locally, else the Docker container should already be running):
+  ```
+  wfm start
+  ```
+
+Each of the terminals started by tmux can be interacted with individually to stop/restart each node process.
 
 ### Using MongoDB from a container
 
@@ -126,33 +154,7 @@ and run the `docker run` command again.
 If this is not the issue then port `27017` on your local machine may have already be claimed by another running instance of MongoDB.
 If this is the case, shut down that MongoDB and run the `docker run` command again.
 
-## Running Raincatcher
-
-- Running the Demo solution locally.
-- Editing a Raincatcher module locally and see it reflected in the Demo solution immediately.
-
-### Running The Demo Solution Locally
-
-1. Install *tmux*
-  * On linux:
-    ```
-    apt-get install tmux
-    ```
-  * On Mac, this may work: https://gist.github.com/simme/1297707.
-
-2. Install tmuxinator (ruby required)
-  ```
-  gem install tmuxinator
-  ```
-
-3. Start the Raincatcher node processes (mongo will be started automatically if you installed it locally, else the Docker container should already be running):
-  ```
-  wfm start
-  ```
-
-Each of the terminals started by tmux can be interacted with individually to stop/restart each node process.
-
-### (Optional) manual mongo Controls
+### (Optional) Manual MongoDB Controls
 
 The `wfm start` task will start mongo automatically.  However the raincatcher-cli provides the `wfm mongo {start|stop|status}` command take manual control of the mongo process:
 ```
