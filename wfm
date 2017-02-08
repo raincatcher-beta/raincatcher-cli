@@ -249,6 +249,37 @@ mongo () {
   #
 }
 
+redis () {
+  PID=`ps x | grep -v grep | grep "redis-server" | awk '{ print $1 }'`
+  case $1 in
+    start)
+    if [ ! -z $PID ]; then
+      echo "Redis is already running. pid: $PID"
+    else
+      redis-server &
+    fi
+    ;;
+    stop)
+    if [ -z $PID ]; then
+      echo "Redis is already stopped."
+    else
+      echo "Redis stopping. pid: $PID"
+      kill $PID
+    fi
+    ;;
+    status)
+    if [ ! -z $PID ]; then
+      echo "Redis is running. pid: $PID"
+    else
+      echo "Redis is not running."
+    fi
+    ;;
+    *)
+    echo "Usage: wfm redis {start|stop|status}"
+  esac
+  #
+}
+
 start () {
   cd $WFM_CLI_DIR
   WFM_PATH=$WFM_DIR tmuxinator wfm
@@ -397,7 +428,6 @@ update() {
   done
 }
 
-
 updateModule() {
   local D=$1;
   cd "$WFM_DIR/$D"
@@ -465,6 +495,9 @@ case $1 in
   mongo)
   mongo $2
   ;;
+  redis)
+  redis $2
+  ;;
   start)
   start
   ;;
@@ -509,8 +542,8 @@ case $1 in
   pwd
   ;;
   shortlist)
-  echo pull link clean install clone status diff path mongo start grep ack commit git atom exec header license pwd
+  echo pull link clean install clone status diff path mongo redis start grep ack commit git atom exec header license pwd
   ;;
   *)
-  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|ack}"
+  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|redis|ack}"
 esac
