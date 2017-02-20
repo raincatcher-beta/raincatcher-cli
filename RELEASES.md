@@ -6,7 +6,7 @@ Make sure you are on `master` on all the repositories
 ```
 wfm git checkout master
 ```
-then : 
+then :
 
 ```
 wfm git pull
@@ -22,7 +22,7 @@ Iterate over each of the modules, performing a npm release and publish if requir
 wfm release
 ```
 
-Push the modules commits to the remotes : 
+Push the modules commits to the remotes :
 
 ```
 wfm git push --tags origin master
@@ -47,28 +47,42 @@ git push --tags origin master
 ### Release the client apps
 For the _wfm-mobile_ and _wfm-portal_ applications we will switch to a _release_ branch and check in the results of the build artifacts.
 
-On a fresh clone, you will have to create the release branch first : 
-```
-git checkout -b release
-```
+The `release` branch is just a holder for generating browserified files from all of the modules. It should never be used for development.
 
-then : 
+(If the release branch is already in the upstream, it can be deleted.)
 
+then :
 
 ```
+# Deleting the release branch from the upstream
+git push upstream :release
+# Deleting the local release branch
+git branch -D release
+git checkout master
+git reset --hard upstream/master
 ncu -f /^fh-wfm/ -u && rm -rf node_modules/ npm-shrinkwrap.json  && npm cache clean && npm install --production && npm shrinkwrap
 git diff
-git commit -a -m'Updated fh-wfm dependencies'
-git push
-git checkout release
-git reset --hard master
+```
+
+Update the `package.json` file to the new version (Minor for master branches, hotfix for FHv-3.x.x branches). Then:
+
+```
+git commit -am 'Updated fh-wfm dependencies'
+git push upstream master
+```
+
+Now that the versions have been updated on master, we need to generate the build folder (www) and add that to the tag.
+
+```
+git checkout -b release
 npm install
 grunt build
+#For mac you need to use sed -i -e ..
 sed -i 's/^www/#www/' .gitignore
 git status
 git add .gitignore www/
-git commit -m'Added the www folder'
-npm version 2.0.0-alpha.5
-git push origin --tags
+git commit -m 'Added the www folder'
+git tag <package.json version>
+git push upstream --tags
 git checkout master
 ```
