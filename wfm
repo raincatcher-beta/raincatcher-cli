@@ -19,8 +19,10 @@ MONGO_DATA="$MONGO_DIR/data"
 MONGO_LOG="$MONGO_DIR/mongodb.log"
 MONGO_PID="$MONGO_DIR/mongodb.pid"
 
-APPS="raincatcher-demo-cloud raincatcher-demo-auth raincatcher-demo-mobile raincatcher-demo-portal"
-MODULES="raincatcher-appform raincatcher-signature raincatcher-mediator raincatcher-risk-assessment raincatcher-sync raincatcher-template-build raincatcher-user raincatcher-vehicle-inspection raincatcher-workflow raincatcher-workorder raincatcher-result raincatcher-message raincatcher-map raincatcher-schedule raincatcher-file raincatcher-camera raincatcher-analytics raincatcher-push raincatcher-simple-store"
+APPS=`cat $WFM_CLI_DIR/apps`
+MODULES=`cat $WFM_CLI_DIR/modules`
+UI_MODULES=`cat $WFM_CLI_DIR/ui_modules`
+#echo $MODULES
 
 ORIG_DIR=$(pwd)
 
@@ -69,6 +71,10 @@ chooseTargets () {
      TARGETS=$APPS;
    elif [ "$1" = "modules" ]; then
      for D in $MODULES; do
+       TARGETS=${TARGETS}" modules/"${D}
+     done
+   elif [ "$1" = "ui_modules" ]; then
+     for D in $UI_MODULES; do
        TARGETS=${TARGETS}" modules/"${D}
      done
    elif [[ $MODULES =~ $1 ]]; then
@@ -142,6 +148,16 @@ clean () {
   done
 }
 
+buildTemplates () {
+  shift
+  local TARGETS=$(chooseTargets "ui_modules")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Building: $D"
+    npm run build
+  done
+}
+
 install () {
   shift
   local TARGETS=$(chooseTargets "$@")
@@ -150,7 +166,9 @@ install () {
     echoHeader "Installing: $D"
     npm install
   done
+  buildTemplates
 }
+
 
 clone () {
   cd "$WFM_DIR"
