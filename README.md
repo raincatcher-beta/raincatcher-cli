@@ -59,8 +59,6 @@ Having run all of the commands above the following folder structure will have be
 ├── RAINCATCHER_DIRECTORY
 │   ├── raincatcher-cli
 │   ├── modules
-│   │   ├── raincatcher-analytics
-│   │   ├── raincatcher-appform
 │   │   ├── raincatcher-camera
 │   │   ├── raincatcher-file
 │   │   ├── raincatcher-map
