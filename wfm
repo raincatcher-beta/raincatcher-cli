@@ -5,7 +5,7 @@ YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
-BASE_REPO="git@github.com:feedhenry-raincatcher"
+BASE_REPO="https://github.com/feedhenry-raincatcher"
 
 WFM_CLI_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo $WFM_CLI_DIR
@@ -63,6 +63,7 @@ requoteArgs () {
 
 chooseTargets () {
   TARGETS=""
+
   if [ -z "$1" ]; then
     TARGETS=$REPO_DIRS;
    elif [ "$1" = "." ]; then
